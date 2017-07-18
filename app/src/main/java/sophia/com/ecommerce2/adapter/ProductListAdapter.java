@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +27,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     private List<Item> mDataSet;
     private Context context;
     private OnAdapterItemClickListener listener;
-    private NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.ITALIAN);
+    private NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.ITALY);
 
     public ProductListAdapter(Context context, List<Item> mDataSet) {
         this.context = context;
@@ -42,11 +43,13 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         TextView descriptionView = (TextView) v.findViewById(R.id.description_item);
         TextView priceView = (TextView) v.findViewById(R.id.price);
         ImageView imageView = (ImageView) v.findViewById(R.id.image_item);
+        ImageButton addToCart = (ImageButton) v.findViewById(R.id.addToCart);
 
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("OnClickListner", v.getTag().toString());
+                Log.d("OnClickListner item", v.getTag().toString());
+
                 if(listener != null){
                     listener.OnItemClick((int)v.getTag());
 
@@ -54,7 +57,19 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             }
         });
 
+        addToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClickListner item", v.getTag().toString());
+
+                if(listener != null){
+                    listener.OnItemAddToCart((int)v.getTag());
+                }
+            }
+        });
+
         ViewHolder vh = new ViewHolder(v, nameView, descriptionView, priceView, imageView);
+        vh.addToCart = addToCart;
         return vh;
     }
 
@@ -70,6 +85,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
         }
         holder.itemView.setTag(position);
+        holder.addToCart.setTag(position);
     }
 
     @Override
@@ -82,6 +98,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         public TextView description;
         public TextView price;
         public ImageView imageView;
+        public ImageButton addToCart;
 
         public ViewHolder(View v, TextView name, TextView description, TextView price, ImageView imageView) {
             super(v);

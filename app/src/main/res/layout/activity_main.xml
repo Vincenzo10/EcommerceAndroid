@@ -6,11 +6,6 @@
     android:orientation="vertical"
     tools:context="sophia.com.ecommerce2.MainActivity">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="buttonOnClick"
-        android:text="GO!"/>
     <TextView
         android:id="@+id/welcome_message"
         android:layout_width="match_parent"

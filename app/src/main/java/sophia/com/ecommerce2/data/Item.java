@@ -5,7 +5,7 @@ package sophia.com.ecommerce2.data;
  */
 
 public class Item {
-    private int mID;
+    private int mId;
     private int category;
     private String name;
     private String description;
@@ -15,7 +15,9 @@ public class Item {
     @Override
     public String toString() {
         return "Item{" +
-                "name='" + name + '\'' +
+                "mId=" + mId +
+                ", category=" + category +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", photoItem='" + photoItem + '\'' +
@@ -49,12 +51,12 @@ public class Item {
         return result;
     }
 
-    public int getmID() {
-        return mID;
+    public int getmId() {
+        return mId;
     }
 
-    public void setmID(int mID) {
-        this.mID = mID;
+    public void setmId(int mId) {
+        this.mId = mId;
     }
 
     public Item(){
@@ -112,4 +114,7 @@ public class Item {
     public void setCategory(int category) {
         this.category = category;
     }
+
+
+
 }

@@ -28,7 +28,7 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = EcommerceOpenHelper.class.getSimpleName();
 
     // has to be 1 first time or app will crash
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 8;
     public static final String CATEGORY_TABLE = "category";
     public static final String ITEM_TABLE = "item";
     private static final String DATABASE_NAME = "ecommerce";
@@ -46,8 +46,6 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_ITEM_DESCRIPTION = "description";
     public static final String KEY_ITEM_PRICE = "price";
     public static final String KEY_ITEM_PHOTO = "photoPath";
-
-
 
     // ... and a string array of columns.
     private static final String[] COLUMNS = { KEY_ID, KEY_TITLE, KEY_SUBTITLE, KEY_IMAGE };
@@ -105,11 +103,12 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
         for (int i = 0; i < 20; i++){
             valuesItem.put(KEY_ITEM_NAME, "Item name" + i);
             valuesItem.put(KEY_ITEM_DESCRIPTION, "Description item " + i);
-            valuesItem.put(KEY_ITEM_PRICE, 2 * i + 1);
-            valuesItem.put(KEY_IMAGE, "http://lorempixel.com/400/400/abstract/2");
+            valuesItem.put(KEY_ITEM_PRICE, 19.90 + i);
+            valuesItem.put(KEY_ITEM_PHOTO, "http://lorempixel.com/400/400/abstract/2");
             valuesItem.put(KEY_ITEM_CATEGORY, i + 1);
 
-            db.insert(ITEM_TABLE, null, valuesItem);
+            long id = db.insert(ITEM_TABLE, null, valuesItem);
+            Log.d("","" + id);
         }
 
 
@@ -146,10 +145,9 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Item queryItem(int position){
+    public Item queryItem(int id){
         String query = "SELECT  * FROM " + ITEM_TABLE +
-                " ORDER BY " + KEY_ITEM_NAME + " ASC " +
-                "LIMIT " + position + ",1";
+                " WHERE _id=?";
 
         Cursor cursor = null;
         Item entry = new Item();
@@ -159,13 +157,14 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
                 mReadableDB = getReadableDatabase();
             }
 
-            cursor = mReadableDB.rawQuery(query, null);
+            cursor = mReadableDB.rawQuery(query, new String[]{String.valueOf(id)});
 
             cursor.moveToFirst();
 
-            entry.setmId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+            entry.setmId(cursor.getInt(cursor.getColumnIndex(KEY_ITEM_ID)));
             entry.setName(cursor.getString(cursor.getColumnIndex(KEY_ITEM_NAME)));
             entry.setDescription(cursor.getString(cursor.getColumnIndex(KEY_ITEM_DESCRIPTION)));
+            entry.setPrice(cursor.getDouble(cursor.getColumnIndex(KEY_ITEM_PRICE)));
             entry.setPhotoItem(cursor.getString(cursor.getColumnIndex(KEY_ITEM_PHOTO)));
 
             entry.setCategory(cursor.getInt(cursor.getColumnIndex(KEY_ITEM_CATEGORY)));
@@ -192,7 +191,7 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
 
             cursor = mReadableDB.rawQuery(query, null);
 
-            cursor.moveToFirst();
+            //cursor.moveToFirst();
 
             while(cursor.moveToNext()){
                 Category entry = new Category();
@@ -214,9 +213,9 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<Item> getAllItem() {
+    public List<Item> getAllItem(int categoryId) {
         List<Item> listItem = new ArrayList<>();
-        String query = "SELECT  * FROM " + ITEM_TABLE;
+        String query = "SELECT  * FROM " + ITEM_TABLE + " WHERE category==" + categoryId;
 
         Cursor cursor = null;
 
@@ -228,7 +227,7 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
 
             cursor = mReadableDB.rawQuery(query, null);
 
-            cursor.moveToFirst();
+            //cursor.moveToFirst();
 
             while(cursor.moveToNext()){
                 Item entry = new Item();
@@ -236,13 +235,12 @@ public class EcommerceOpenHelper extends SQLiteOpenHelper {
                 entry.setmId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
                 entry.setName(cursor.getString(cursor.getColumnIndex(KEY_ITEM_NAME)));
                 entry.setDescription(cursor.getString(cursor.getColumnIndex(KEY_ITEM_DESCRIPTION)));
+                entry.setPrice(cursor.getDouble(cursor.getColumnIndex(KEY_ITEM_PRICE)));
                 entry.setPhotoItem(cursor.getString(cursor.getColumnIndex(KEY_ITEM_PHOTO)));
 
                 entry.setCategory(cursor.getInt(cursor.getColumnIndex(KEY_ITEM_CATEGORY)));
                 listItem.add(entry);
             }
-
-
 
         } catch (Exception e) {
             Log.d(TAG, "EXCEPTION! " + e);
